@@ -4,13 +4,40 @@ subtitlemod
 A quick and simple tool that modifies subtitle file timings.
 """
 
+###############################################################################
+# Imports and Constants
+###############################################################################
 import argparse
 import re
 import time
 
-TIME_DELAY_MS = 500
+# Note about patterns:
+#   Shift: can be any negative or positive integer
+#   Stretch: can only be positive, non-zero integer or float
+#   Timestamp: fixed to SRT format - may require changes
+PATTERN_STR_TIME_EXT = "ms|s|m|h"
+PATTERN_STR_TIMESTAMP = r"\d{2}:\d{2}:\d{2},\d{3}"
 
+PATTERN_STR_SHIFT = r"^-?\d+(" + PATTERN_STR_TIME_EXT + ")?$"
+PATTERN_STR_STRETCH = r"^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)"
+                    + PATTERN_STR_TIME_EXT + ")?$"
+
+PATTERN_SHIFT = re.compile(PATTERN_STR_SHIFT)
+PATTERN_STRETCH = re.compile(PATTERN_STR_STRETCH)
+PATTERN_TIMESTAMP = re.compile(PATTERN_STR_TIMESTAMP)
+
+
+###############################################################################
+# Helper Functions: Conversion and Formatting
+###############################################################################
 def str_to_time(s):
+    """
+    Convert a string with the format HH:MM:SS,mmm (m being
+    milliseconds) into the equivalent number of milliseconds.
+
+    Note: currently hardcoded to this format, may need to be
+    updated.
+    """
     hours, minutes, seconds = s.strip().split(":")
     seconds, millis = seconds.strip().split(",")
 
@@ -21,7 +48,15 @@ def str_to_time(s):
     return total_time
 #/def
 
+
 def time_to_str(t):
+    """
+    Convert time as a number of milliseconds into the format
+    HH:MM:SS,mmm (m being milliseconds).
+
+    Note: currently hardcoded to this format, may need to be
+    updated.
+    """
     return "{h:02}:{m:02}:{s:02},{mm:03}".format(
         h=t//(60*60*1000),
         m=(t//(60*1000))%60,
@@ -29,6 +64,10 @@ def time_to_str(t):
         mm=t%1000)
 #/def
 
+
+###############################################################################
+# Main Functions: Argument Handling and Main Function
+###############################################################################
 def argument_parse():
     """
     A wrapper for Python argparse. The wrapper initialized the argument
@@ -72,13 +111,13 @@ def argument_parse():
     return args
 #/def
 
+
 def main():
-    pattern_timestamp = re.compile(r"\d{2}:\d{2}:\d{2},\d{3}")
     delayed = ""
 
     with open("./subs.srt", "r") as srt_file:
         file_content = srt_file.read()
-        matches = re.findall(pattern_timestamp, file_content)
+        matches = re.findall(PATTERN_TIMESTAMP, file_content)
 
         for m in matches:
             file_content = file_content.replace(m.strip(), time_to_str(str_to_time(m) - TIME_DELAY_MS))
@@ -89,6 +128,7 @@ def main():
         #/with
     #/with
 #/def
+
 
 if __name__ == "__main__":
     args = argument_parse()
