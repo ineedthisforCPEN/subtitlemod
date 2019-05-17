@@ -11,16 +11,17 @@ import argparse
 import re
 import time
 
+# Default arguments
+DEFAULT_SHIFT = 0
+DEFAULT_STRETCH = 1.0
+
 # Note about patterns:
 #   Shift: can be any negative or positive integer
 #   Stretch: can only be positive, non-zero integer or float
 #   Timestamp: fixed to SRT format - may require changes
-PATTERN_STR_TIME_EXT = "ms|s|m|h"
+PATTERN_STR_SHIFT = r"^-?\d+(ms|s|m|h)?$"
+PATTERN_STR_STRETCH = r"^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$"
 PATTERN_STR_TIMESTAMP = r"\d{2}:\d{2}:\d{2},\d{3}"
-
-PATTERN_STR_SHIFT = r"^-?\d+(" + PATTERN_STR_TIME_EXT + ")?$"
-PATTERN_STR_STRETCH = r"^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)"
-                    + PATTERN_STR_TIME_EXT + ")?$"
 
 PATTERN_SHIFT = re.compile(PATTERN_STR_SHIFT)
 PATTERN_STRETCH = re.compile(PATTERN_STR_STRETCH)
