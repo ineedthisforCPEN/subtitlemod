@@ -115,7 +115,7 @@ def argument_parse():
 
 def main():
     args = argument_parse()
-    print("subtitlemod ver " + VERSION)
+    print("subtitlemod ver. " + VERSION)
 
     # Warn users of unimplemented CLI options they may have input
     if args.shift != DEFAULT_SHIFT:
@@ -123,20 +123,25 @@ def main():
     if args.stretch != DEFAULT_STRETCH:
         print("WARNING\t STRETCH option not implemented")
     #/if
-    delayed = ""
 
-    with open("./subs.srt", "r") as srt_file:
-        file_content = srt_file.read()
-        matches = re.findall(PATTERN_TIMESTAMP, file_content)
+    print("")
+    print("Subtitle file: " + args.subfile)
+    print("Output file:   " + args.outfile)
+    print("Shift:         " + args.shift)
+    print("Stretch:       " + args.stretch)
 
-        for m in matches:
-            file_content = file_content.replace(m.strip(), time_to_str(str_to_time(m) - TIME_DELAY_MS))
-        #/for
+    # with open("./subs.srt", "r") as srt_file:
+    #     file_content = srt_file.read()
+    #     matches = re.findall(PATTERN_TIMESTAMP, file_content)
 
-        with open("./delayed.srt", "w") as delayed_file:
-            delayed_file.write(file_content)
-        #/with
-    #/with
+    #     for m in matches:
+    #         file_content = file_content.replace(m.strip(), time_to_str(str_to_time(m) - TIME_DELAY_MS))
+    #     #/for
+
+    #     with open("./delayed.srt", "w") as delayed_file:
+    #         delayed_file.write(file_content)
+    #     #/with
+    # #/with
 #/def
 
 
