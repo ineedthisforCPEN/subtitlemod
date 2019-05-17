@@ -129,19 +129,6 @@ def main():
     print("Output file:   " + args.outfile)
     print("Shift:         " + args.shift)
     print("Stretch:       " + args.stretch)
-
-    # with open("./subs.srt", "r") as srt_file:
-    #     file_content = srt_file.read()
-    #     matches = re.findall(PATTERN_TIMESTAMP, file_content)
-
-    #     for m in matches:
-    #         file_content = file_content.replace(m.strip(), time_to_str(str_to_time(m) - TIME_DELAY_MS))
-    #     #/for
-
-    #     with open("./delayed.srt", "w") as delayed_file:
-    #         delayed_file.write(file_content)
-    #     #/with
-    # #/with
 #/def
 
 
