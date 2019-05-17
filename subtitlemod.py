@@ -114,6 +114,15 @@ def argument_parse():
 
 
 def main():
+    args = argument_parse()
+    print("subtitlemod ver " + VERSION)
+
+    # Warn users of unimplemented CLI options they may have input
+    if args.shift != DEFAULT_SHIFT:
+        print("WARNING\t SHIFT option not implemented")
+    if args.stretch != DEFAULT_STRETCH:
+        print("WARNING\t STRETCH option not implemented")
+    #/if
     delayed = ""
 
     with open("./subs.srt", "r") as srt_file:
@@ -132,5 +141,5 @@ def main():
 
 
 if __name__ == "__main__":
-    args = argument_parse()
+    main()
 #/if
