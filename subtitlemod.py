@@ -12,9 +12,10 @@ import re
 import time
 
 # Default arguments
-DEFAULT_SHIFT = 0
-DEFAULT_STRETCH = 1.0
-VERSION = "0.0.1"
+DEFAULT_SHIFT = "0"
+DEFAULT_STRETCH = "1.0"
+TIME_EXTENSION = {"":1, "ms":1, "s":1000, "m":60*1000, "h":60*60*1000}
+VERSION = "1.0.0"
 
 # Note about patterns:
 #   Shift: can be any negative or positive integer
@@ -83,10 +84,10 @@ def argument_parse():
     parser.add_argument("-o", "--output-file", type=str,
                         help="The output file containing the modified content"
                             +" (default: [original_name]_modified.[extension])")
-    parser.add_argument("-s", "--shift", default="0", type=str,
+    parser.add_argument("-s", "--shift", default=DEFAULT_SHIFT, type=str,
                         help="The amount by which to shift all subtitle "
                             +"timings (default: 0 milliseconds)")
-    parser.add_argument("-x", "--stretch", default="1.0", type=str,
+    parser.add_argument("-x", "--stretch", default=DEFAULT_STRETCH, type=str,
                         help="The factor by which to stretch subtitle timings "
                             +"(default: 1.0)")
     args = parser.parse_args()
@@ -99,9 +100,12 @@ def argument_parse():
 
     # Ensure that the stretch and shift times are valid entries
     try:
-        args.shift = int(args.shift, 10)
+        split_time = re.split(r"(\d+)", args.shift)
+        args.shift = int(split_time[1]) * TIME_EXTENSION[split_time[2]]
     except ValueError:
-        raise ValueError("The SHIFT value must be a valid integer") from None
+        errstr = "The SHIFT value must be an integer with a valid extension "
+        errstr += "(i.e. ms, s, m, or h)"
+        raise ValueError(errstr) from None
     #/try
 
     try:
@@ -119,17 +123,10 @@ def main():
     args = argument_parse()
     print("subtitlemod ver. " + VERSION)
 
-    # Warn users of unimplemented CLI options they may have input
-    if args.shift != DEFAULT_SHIFT:
-        print("WARNING\t SHIFT option not implemented")
-    if args.stretch != DEFAULT_STRETCH:
-        print("WARNING\t STRETCH option not implemented")
-    #/if
-
     print("")
     print("Subtitle file: " + args.subfile)
     print("Output file:   " + args.output_file)
-    print("Shift:         " + str(args.shift))
+    print("Shift:         " + str(args.shift) + "ms")
     print("Stretch:       " + str(args.stretch))
 
     with open(args.subfile, "r") as subfile:
