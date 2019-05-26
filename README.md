@@ -10,9 +10,9 @@
 
 ## TODO
 [x] Add command-line options (argparse)
-[ ] CLI Option: set input file
-[ ] CLI Option: set output file
-[ ] CLI Option: set shift time
-[ ] CLI Option: set stretch factor
-[ ] Stretch timings by a given factor
+[x] CLI Option: set input file
+[x] CLI Option: set output file
+[x] CLI Option: set shift time
+[x] CLI Option: set stretch factor
+[x] Stretch timings by a given factor
 [ ] "Pretty" time string for shift/stretch time (e.g. 10s for 10 seconds)
