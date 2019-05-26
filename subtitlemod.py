@@ -14,6 +14,7 @@ import time
 # Default arguments
 DEFAULT_SHIFT = 0
 DEFAULT_STRETCH = 1.0
+VERSION = "0.0.1"
 
 # Note about patterns:
 #   Shift: can be any negative or positive integer
@@ -58,11 +59,12 @@ def time_to_str(t):
     Note: currently hardcoded to this format, may need to be
     updated.
     """
+    t = max(t, 0)
     return "{h:02}:{m:02}:{s:02},{mm:03}".format(
-        h=t//(60*60*1000),
-        m=(t//(60*1000))%60,
-        s=(t//1000)%60,
-        mm=t%1000)
+        h=int(t/(60*60*1000)),
+        m=int((t/(60*1000))%60),
+        s=int((t/1000)%60),
+        mm=int(t%1000))
 #/def
 
 
@@ -126,9 +128,23 @@ def main():
 
     print("")
     print("Subtitle file: " + args.subfile)
-    print("Output file:   " + args.outfile)
-    print("Shift:         " + args.shift)
-    print("Stretch:       " + args.stretch)
+    print("Output file:   " + args.output_file)
+    print("Shift:         " + str(args.shift))
+    print("Stretch:       " + str(args.stretch))
+
+    with open(args.subfile, "r") as subfile:
+        content = subfile.read()
+        matches = re.findall(PATTERN_TIMESTAMP, content)
+
+        for m in matches:
+            newtime = time_to_str(args.stretch*str_to_time(m) - args.shift)
+            content = content.replace(m, newtime)
+        #/for
+
+        with open(args.output_file, "w") as outfile:
+            outfile.write(content)
+        #/with
+    #/with
 #/def
 
 
